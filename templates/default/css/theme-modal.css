@@ -1,0 +1,124 @@
+.nyroModalBg {
+	position: fixed;
+	overflow: hidden;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #000;
+	opacity: 0.7;
+    z-index: 100;
+}
+.nmReposition {
+	position: absolute;
+}
+.nyroModalCloseButton {
+    top: 0px;
+    right: -60px;
+    width: 38px;
+    height: 38px;
+	text-indent: -9999em;
+	background: url("../images/modal/close.png");
+    z-index: 101;
+}
+.nyroModalTitle {
+    margin: 0;
+    top: -25px;
+    font-size: 1.4em;
+    color: #FFF;
+    z-index: 200;
+    padding: 0;
+    background: none;
+    border: 0;
+    height: 22px;
+    line-height: 22px;
+}
+.nyroModalCont {
+	position: absolute;
+    box-shadow:0 0 30px #000;
+	margin: 30px;
+    padding:0;
+	background: #fff;
+    z-index: 101;
+}
+.nyroModalCont .notice{
+    padding:20px;
+    color:#BDC3C7;
+}
+.nyroModalError {
+	border: 1px solid red;
+	color: red;
+	width: 250px;
+	height: 250px;
+}
+.nyroModalError div {
+	min-width: 0;
+	min-height: 0;
+	padding: 10px;
+}
+.nyroModalLink, .nyroModalDom, .nyroModalForm, .nyroModalFormFile {
+	position: relative;
+	max-width: 1000px;
+}
+.nyroModalImage, .nyroModalSwf, .nyroModalIframe, .nyroModalIframeForm {
+	position: relative;
+	overflow: hidden;
+}
+.nyroModalImage img {
+    vertical-align: top;
+}
+.nyroModalHidden {
+	left: -9999em;
+	top: -9999em;
+}
+.nyroModalLoad {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	background: #fff url(../images/modal/ajaxLoader.gif) no-repeat center;
+	padding: 0;
+}
+.nyroModalPrev, .nyroModalNext {
+	outline: none;
+	position: fixed;
+	top: 0;
+	height: 60%;
+	width: 150px;
+	min-height: 50px;
+	max-height: 300px;
+	cursor: pointer;
+	text-indent: -9999em;
+    transition: none;
+}
+.nyroModalPrev:after, .nyroModalNext:after {
+    content: '';
+    height: 32px;
+    width: 20px;
+    background-image: url(../images/modal/controls.png);
+    background-position: 0px 0;
+    position: absolute;
+    top: 50%;
+    margin-top: -16px;
+    opacity: 0.5;
+}
+.nyroModalImage .nyroModalPrev, .nyroModalImage .nyroModalNext {
+	height: 100%;
+	width: 40%;
+	max-height: none;
+}
+.nyroModalPrev {
+	left: 0;
+}
+.nyroModalNext {
+	right: 0;
+}
+.nyroModalPrev:after {
+	left: 30px;
+}
+.nyroModalNext:after {
+    right: 30px;
+    background-position: 0px -40px;
+}
+.nyroModalPrev:hover:after, .nyroModalNext:hover:after {
+	opacity: 1;
+}
