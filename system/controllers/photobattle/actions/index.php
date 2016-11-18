@@ -1,6 +1,6 @@
 <?php
 
-class actionPhotobatleIndex extends cmsAction {
+class actionPhotobattleIndex extends cmsAction {
 	public function run () {
 		$template=cmsTemplate::getInstance();
 		//$template->addOutput('Hello world');
