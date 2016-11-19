@@ -19,6 +19,12 @@ class actionPhotobattleAdd extends cmsAction {
 			$errors=$form->validate($this,$battle);
 		
 		if(!$errors) {
+			//если ошибок нет то мы узнаем айди битвы после того как добавляем ее
+			//обращаемся для этого к модели. объект model инициализируется автоматически и доступеен в любом экшене и в фронтенде
+			$battle_id=$this->model->addBattle($battle);
+			//после того как мы узнали айди битвы,мы может перенаправить пользователя на страницу текущей битвы
+			//редирект на /photobattle/просмотр битвы(экшен)/ID
+			$this->redirectToAction('battle',array($battle_id));
 
 		}
 		if($errors) {
