@@ -4,6 +4,8 @@ class actionPhotobattleAdd extends cmsAction {
 	public function run() {
 		if(!cmsUser::isAdmin()) {cmsCore::error404();}
 		$errors=false;
+			//получаем форму //batle - вторая часть названия файла формы form_batle.php
+		$form=$this->getForm('battle'); 
 		//есть ли в пост запросе поле с названием submit. has возвращает либо true либо false в зависимости от наличия переменной submit в запросе
 		$is_submitted = $this->request->has('submit');
 		//маассив с данными,полученными из формы
@@ -24,10 +26,6 @@ class actionPhotobattleAdd extends cmsAction {
 			cmsUser::addSessionMessage(LANG_FORM_ERRORS,'error'); 
 		}
 	}
-
-		//получаем форму 
-		$form=$this->getForm('battle'); //batle - вторая часть названия файла формы form_batle.php
-		
 		$template=cmsTemplate::getInstance();
 		//$template->addOutput('Add batll');
 		$template->render('form_battle',array(
