@@ -16,6 +16,4 @@ $this->addBreadcrumb($page_title);
 	//нужно ли показывать кнопки сохранить и отменить
 	'toolbar'=>false),
  $errors)
-
-
 ?>
