@@ -33,8 +33,9 @@ class modelPhotobattle extends cmsModel {
 		//если $logos является массивом, то очищаем его
 		if(is_array($logos)) {
 			//берем каждый путь и приклеиваем к нему путь к папке upload и полученый файл удаяем
+			// По идее здесь надо проверять существует ли файл,чтобы его удалять. Но мы вместо проверки поставим @ 
 			foreach($logos as $path) {
-				unlink($config->upload_path . $path);
+				@unlink($config->upload_path . $path);
 			}
 		}//теперь логотипы будут удаляться вместе с битвой
 		

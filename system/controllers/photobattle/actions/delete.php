@@ -10,7 +10,7 @@ class actionPhotobattleDelete extends cmsAction {
 		$battle=$this->model->getBattle($id);
 		if(!$battle) {cmsCore::error404();}
     // просим модель удалить битву
-		$this->model->deleteBattle('$id');
+		$this->model->deleteBattle($id);
 		//редирект на экшен индекс
 		$this->redirectToAction('');
 		
