@@ -3,6 +3,19 @@ $this->setPageTitle($battle['title']);
 $this->addBreadcrumb(LANG_PHOTOBATTLE_CONTROLLER,$this->href_to('')); //ссылка на корнево экшен index
 $this->addBreadcrumb($battle['title']);
 
+//если битва не запущена
+if($battle['status']==photobattle::STATUS_PENDING) {
+	$this->addToolButton(array(
+		'class'=>'user_add',
+		'title'=>LANG_PHOTOBATTLE_JOIN,
+		//ссылка на экшен edit, которому будет передаваться айди битвы
+		'href'=>$this->href_to('join',$battle['id'])
+		));
+
+}
+
+
+
 if (cmsUser::isAdmin()) {
 	$this->addToolButton(array(
 		'class'=>'edit',

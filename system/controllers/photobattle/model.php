@@ -52,5 +52,17 @@ class modelPhotobattle extends cmsModel {
 		return $this->getCount('photobattles');
 	}
 
+	public function addPhoto($photo) {
+
+		$photo_id=$this->insert('photobattles_photos',$photo);
+	  //увеличиваем а единицу количество участников
+		$this->increment('photobattles_photos','count_users');
+
+		return $photo_id;
+
+	}
+
+
+
 
 }
