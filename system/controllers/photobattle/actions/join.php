@@ -57,8 +57,24 @@ class actionPhotobattleJoin extends cmsAction {
 			
 			//добавляем получателя сообщения,предавая айди получателя 
 			$messenger->addRecipient(1);
-			
 
+			//создаем само уведомление
+				$notice = array(
+					//текст уведомления. %s в константе заменяется с помощью функции sprintf на название битвы
+						'content' => sprintf(LANG_PHOTOBATTLE_MODERATION_NOTICE, $battle['title']), 
+					//массив с кнопками
+						'actions' => array(
+							'view' => array(
+								'title' => LANG_SHOW,
+								//$this->name это название текущего компонента battle- экшен, $battle_id - параметр для экшена
+								'href' => href_to($this->name, 'battle', $battle_id)
+							)
+						)
+					);
+
+				//отправить уведомление,описанное в массиве
+				$messenger->sendNoticePM($notice);
+					
 			//после того как мы узнали айди битвы,мы может перенаправить пользователя на страницу текущей битвы
 			//редирект на /photobattle/просмотр битвы(экшен)/ID
 			$this->redirectToAction('battle',array($battle_id));

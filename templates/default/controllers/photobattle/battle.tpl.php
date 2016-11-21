@@ -19,6 +19,25 @@ if($battle['status']==photobattle::STATUS_PENDING) {
 
 
 if (cmsUser::isAdmin()) {
+	
+	if ($battle['status'] != photobattle::STATUS_OPENED){
+
+		$this->addToolButton(array(
+			'class' => 'accept',
+			'title' => LANG_PHOTOBATTLE_START,
+			'href' => $this->href_to('start', $battle['id'])
+			));			
+	}
+
+	if ($battle['status'] == photobattle::STATUS_OPENED){
+
+		$this->addToolButton(array(
+			'class' => 'cancel',
+			'title' => LANG_PHOTOBATTLE_STOP,
+			'href' => $this->href_to('stop', $battle['id'])
+			));			
+	}
+
 	$this->addToolButton(array(
 		'class'=>'edit',
 		'title'=>LANG_PHOTOBATTLE_EDIT,
