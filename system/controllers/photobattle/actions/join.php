@@ -6,9 +6,18 @@ class actionPhotobattleJoin extends cmsAction {
 		if(!$battle_id) {cmsCore::error404();}
 
 		$battle=$this->model->getBattle($battle_id);
+
+		//инициализируем объект пользователя дл получения его айди при добавлении им фотографии
+		$user=cmsUser::getInstance();
     
     //если не вернуло битву из базы или статус не равен набор участников
 		if (!$battle || $battle['status'] != photobattle::STATUS_PENDING) { 
+			cmsCore::error404();
+		}
+
+		$is_user_in_battle=$this->model->isUserInBattle($user->id,$id);
+
+		if ($is_user_in_battle || !cmsUser::isAdmin()) {
 			cmsCore::error404();
 		}
 	
@@ -24,10 +33,7 @@ class actionPhotobattleJoin extends cmsAction {
 		//объект $this->request содержит данные введеные пользователем. is_submitted - была ли форма уже отправлена (true,false)
 		$photo = $form->parse($this->request, $is_submitted);
 
-    //инициализируем объект пользователя дл получения его айди при добавлении им фотографии
-		$user=cmsUser::getInstance();
-
-
+    
 		if($is_submitted) {
 			$errors=$form->validate($this,$photo);
 		
@@ -39,6 +45,18 @@ class actionPhotobattleJoin extends cmsAction {
 
 			//обращаемся для этого к модели. объект model инициализируется автоматически и доступеен в любом экшене и в фронтенде
 			$this->model->addPhoto($photo);
+
+			$battle = $this->model->getBattle($battle_id);
+				
+			if ($battle['users_count'] >= $battle['min_users']){
+					//устанавливаем другой статус (модерация)
+				$this->model->setBattleStatus($battle_id, photobattle::STATUS_MODERATION);
+			}
+     //получаем объект компонента messages
+			$messenger = cmsCore::getController('messages');
+			
+			//добавляем получателя сообщения,предавая айди получателя 
+			$messenger->addRecipient(1);
 			
 
 			//после того как мы узнали айди битвы,мы может перенаправить пользователя на страницу текущей битвы

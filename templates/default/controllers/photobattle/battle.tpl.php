@@ -5,12 +5,14 @@ $this->addBreadcrumb($battle['title']);
 
 //если битва не запущена
 if($battle['status']==photobattle::STATUS_PENDING) {
+	if (!$is_user_in_battle || cmsUser::isAdmin()) {
 	$this->addToolButton(array(
 		'class'=>'user_add',
 		'title'=>LANG_PHOTOBATTLE_JOIN,
 		//ссылка на экшен edit, которому будет передаваться айди битвы
 		'href'=>$this->href_to('join',$battle['id'])
 		));
+  }
 
 }
 
@@ -32,8 +34,52 @@ if (cmsUser::isAdmin()) {
 		));
 }
 
+$statuses_text = array(
+		0 => LANG_PHOTOBATTLE_STATUS_PENDING,
+		1 => LANG_PHOTOBATTLE_STATUS_MODERATION,
+		2 => LANG_PHOTOBATTLE_STATUS_OPENED,
+		3 => LANG_PHOTOBATTLE_STATUS_CLOSED,		
+	);	
+
 ?>
 
 
 
 <h1> <?php html($battle['title']);?> </h1> 
+
+<div class="photobattle-status">
+	<strong><?php echo LANG_PHOTOBATTLE_STATUS; ?>:</strong>
+	<?php echo $statuses_text[ $battle['status'] ]; ?> 
+
+</div>
+
+
+<?php if ($battle['photos']) { ?>
+
+	<div class="photobattle-images">
+		<ul>
+			<?php foreach($battle['photos'] as $photo) { ?>
+				<li>
+					<a class="image" href="<?php echo html_image_src($photo['image'], 'big', true); ?>" title="<?php echo $photo['user_nickname'];  ?>">
+						<?php echo html_image($photo['image'], 'small'); ?>
+					</a>
+					<div class="details">
+						
+							<a class="user" href="<?php echo href_to('users', $photo['user_id']); ?>"><?php echo $photo['user_nickname']; ?></a> 
+					
+						
+						
+						
+						<?php } ?>
+					</div>
+				</li>
+			<?php } ?>
+		</ul>
+		<script>
+			$(document).ready(function(){
+				icms.modal.bindGallery('.photobattle-images .image');
+			})
+		</script>
+	</div>
+
+

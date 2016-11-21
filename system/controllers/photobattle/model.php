@@ -16,7 +16,23 @@ class modelPhotobattle extends cmsModel {
 	}
 	public function getBattle($id) {
 		//вытаскиваем битву из таблицы photobattles по айди
-		return $this->getItemById('photobattles',$id);
+		$battle=$this->getItemById('photobattles',$id);
+
+    //в массиве $battle['photos'] будут находиться только те фотографии,которые отностся к текуще битве(фильтруем)
+    //отфильтровываем те строки, которые не относятся к айди,который мы передали для получения битвы
+		$this->filterEqual('battle_id',$id);
+   //указываем поле и сортируем по убывающей
+		$this->orderBy('score', 'desc');
+   // объединение айдишников из таблиц users и photobattles_photos(из которой будет происходить запрос)
+		$this->join('{users}', 'u', 'u.id = i.user_id');
+   // из приджоенной таблицы вытаскиваем поле nickname и в результирующий массив засовываем его как user_nickname
+		$this->select('u.nickname', 'user_nickname');
+
+		$battle['photos'] = $this->get('photobattles_photos');
+
+		return $battle;
+
+
 
 	}
 	public function deleteBattle($id) {
@@ -66,4 +82,32 @@ class modelPhotobattle extends cmsModel {
 		return $photo_id;
 
 	}
+
+//учавствует ли пользователь уже в битве
+	public function isUserInBattle($user_id,$battle_id) {
+    
+    //фильтруем,что айди нашей переменной в запросе должен равняться переданной переменной
+    $this->filterEqual('user_id',$user_id);
+
+    $this->filterEqual('battle_id',$battle_id);
+
+		//узнаем количество строк в таблице
+		//пиведение к типу булеан
+		$result=(bool)$this->getCount('photobattles_photos');
+
+		//запрос,который узнает количество строк не збрасывает фильтры
+		//иначе следующий запрос будет выполнен с применением этих же фильтров
+		$this->resetFilters();
+		return $result;
+	}
+
+	public function setBattleStatus($battle_id, $status){
+		//$status - новый статус
+		return $this->update('photobattles', $battle_id, array(
+			'status' => $status
+		));
+	}
+	
+
+
 }
