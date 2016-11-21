@@ -54,15 +54,16 @@ class modelPhotobattle extends cmsModel {
 
 	public function addPhoto($photo) {
 
+    // вставляем в таблицу те данные которые нам переданы из формы и получаем айди вставленной фоотографии
 		$photo_id=$this->insert('photobattles_photos',$photo);
-	  //увеличиваем а единицу количество участников
-		$this->increment('photobattles_photos','count_users');
+    
+    //Фильтр. Поле будет увеличено только у тех строк, у которых айди равно айди нашей битвы.
+    $this->filterEqual('id',$photo['battle_id']);
+
+	  //увеличиваем на единицу количество участников
+		$this->increment('photobattles','users_count');
 
 		return $photo_id;
 
 	}
-
-
-
-
 }

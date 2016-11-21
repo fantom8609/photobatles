@@ -5,7 +5,7 @@ class actionPhotobattleJoin extends cmsAction {
 
 		if(!$battle_id) {cmsCore::error404();}
 
-		$battle=$this->model->getBattle($id);
+		$battle=$this->model->getBattle($battle_id);
     
     //если не вернуло битву из базы или статус не равен набор участников
 		if (!$battle || $battle['status'] != photobattle::STATUS_PENDING) { 
@@ -24,13 +24,23 @@ class actionPhotobattleJoin extends cmsAction {
 		//объект $this->request содержит данные введеные пользователем. is_submitted - была ли форма уже отправлена (true,false)
 		$photo = $form->parse($this->request, $is_submitted);
 
+    //инициализируем объект пользователя дл получения его айди при добавлении им фотографии
+		$user=cmsUser::getInstance();
+
 
 		if($is_submitted) {
 			$errors=$form->validate($this,$photo);
 		
 		if(!$errors) {
+			//из формы передается только изображение. Добавим также айди битвы и айди юзера
+			//теперь в массиве photo будут содержатьс все 3 необходимых поля
+			$photo['battle_id']=$battle_id;
+			$photo['user_id']=$user->id;
+
 			//обращаемся для этого к модели. объект model инициализируется автоматически и доступеен в любом экшене и в фронтенде
-			$this->model->getPhoto($photo);
+			$this->model->addPhoto($photo);
+			
+
 			//после того как мы узнали айди битвы,мы может перенаправить пользователя на страницу текущей битвы
 			//редирект на /photobattle/просмотр битвы(экшен)/ID
 			$this->redirectToAction('battle',array($battle_id));
