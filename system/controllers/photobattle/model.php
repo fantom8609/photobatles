@@ -184,6 +184,18 @@ class modelPhotobattle extends cmsModel {
 		}
 		return $this->insert('photobattles_votes', $vote);
 	}
+
+
+		public function closeExpiredBattles(){
+		
+		$this->filterDateOlder('date_end', 1, 'DAY');
+		
+		// updateFiltered работает не по айдиа по фильтру выше
+		$this->updateFiltered('photobattles', array(
+			'status' => photobattle::STATUS_CLOSED
+		));
+		
+	}
 	
 
 

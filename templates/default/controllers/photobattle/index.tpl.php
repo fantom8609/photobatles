@@ -42,3 +42,10 @@ $this->addToolButton(array(
 		</div>
 	<?php } ?>
 </div>
+
+<?php if($total > $perpage) { ?>
+	<?php echo html_pagebar($page, $perpage, $total); ?>	
+<?php } ?>
+
+
+

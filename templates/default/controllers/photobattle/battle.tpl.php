@@ -11,7 +11,7 @@ if($battle['status']==photobattle::STATUS_PENDING) {
 	$this->addToolButton(array(
 		'class'=>'user_add',
 		'title'=>LANG_PHOTOBATTLE_JOIN,
-		//ссылка на экшен edit, которому будет передаваться айди битвы
+		//ссылка на экшен join, которому будет передаваться айди битвы
 		'href'=>$this->href_to('join',$battle['id'])
 		));
   }
@@ -66,12 +66,69 @@ $statuses_text = array(
 
 
 <h1> <?php html($battle['title']);?> </h1> 
-
 <div class="photobattle-status">
 	<strong><?php echo LANG_PHOTOBATTLE_STATUS; ?>:</strong>
 	<?php echo $statuses_text[ $battle['status'] ]; ?> 
-
+	<?php if ($battle['status'] == photobattle::STATUS_OPENED) { ?>
+		&mdash; <?php echo LANG_PHOTOBATTLE_YOU_VOTED; ?>
+	<?php } ?>
 </div>
+
+
+<?php if ($battle['status'] == photobattle::STATUS_CLOSED) { ?>
+
+	<?php
+	$winners = array_slice($battle['photos'], 0, 3);
+	$battle['photos'] = array_slice($battle['photos'], 3);
+	?>
+
+	<h2><?php echo LANG_PHOTOBATTLE_WINNERS; ?></h2>
+
+		<div class="photobattle-winners">
+		<div class="place place-1">
+			<?php $photo = array_shift($winners); ?>
+			<h3><?php echo LANG_PHOTOBATTLE_1_PLACE; ?></h3>
+			<?php if ($is_show_names) { ?>
+				<div class="user">
+					<a href="<?php echo href_to('users', $photo['user_id']); ?>"><?php echo $photo['user_nickname']; ?></a> 
+				</div>
+			<?php } ?>
+			<?php echo html_image($photo['image'], 'big'); ?>			
+		</div>
+		
+		<div class="places-2-3">
+			<div class="place place-2">
+				<?php $photo = array_shift($winners); ?>
+				<h3><?php echo LANG_PHOTOBATTLE_2_PLACE; ?></h3>
+				<?php if ($is_show_names) { ?>
+					<div class="user">
+						<a href="<?php echo href_to('users', $photo['user_id']); ?>"><?php echo $photo['user_nickname']; ?></a> 
+					</div>
+				<?php } ?>
+				<a class="ajax-modal" href="<?php echo html_image_src($photo['image'], 'big', true); ?>" title="<?php if ($is_show_names) { echo $photo['user_nickname']; } ?>">
+					<?php echo html_image($photo['image'], 'normal'); ?>				
+				</a>
+			</div>
+			<div class="place place-3">
+				<?php $photo = array_shift($winners); ?>
+				<h3><?php echo LANG_PHOTOBATTLE_3_PLACE; ?></h3>
+				<?php if ($is_show_names) { ?>
+					<div class="user">
+						<a href="<?php echo href_to('users', $photo['user_id']); ?>"><?php echo $photo['user_nickname']; ?></a> 
+					</div>
+				<?php } ?>
+				<a class="ajax-modal" href="<?php echo html_image_src($photo['image'], 'big', true); ?>" title="<?php if ($is_show_names) { echo $photo['user_nickname']; } ?>">
+					<?php echo html_image($photo['image'], 'normal'); ?>				
+				</a>
+			</div>
+		</div>
+		
+	</div>
+
+<?php } ?>
+
+
+
 
 
 <?php if ($battle['photos']) { ?>
@@ -89,7 +146,11 @@ $statuses_text = array(
 							<!-- мы можем удалить фотографию,зная ее айди-->
 							<a class="delete" title="<?php echo LANG_PHOTOBATTLE_PHOTO_DELETE;?>"
 							href="<?php echo $this->href_to('delete_photo', $photo['id']); ?>">X</a> 
-
+								<?php if ($battle['status'] == photobattle::STATUS_CLOSED) { ?>
+							<div class="result">
+								<?php echo LANG_PHOTOBATTLE_WINS . ': ' . $photo['score']; ?>
+							</div>
+						<?php } ?>
 					</div>
 				</li>
 			<?php } ?>
