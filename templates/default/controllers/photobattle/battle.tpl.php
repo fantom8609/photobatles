@@ -5,7 +5,9 @@ $this->addBreadcrumb($battle['title']);
 
 //если битва не запущена
 if($battle['status']==photobattle::STATUS_PENDING) {
+
 	if (!$is_user_in_battle || cmsUser::isAdmin()) {
+
 	$this->addToolButton(array(
 		'class'=>'user_add',
 		'title'=>LANG_PHOTOBATTLE_JOIN,
@@ -13,7 +15,6 @@ if($battle['status']==photobattle::STATUS_PENDING) {
 		'href'=>$this->href_to('join',$battle['id'])
 		));
   }
-
 }
 
 
@@ -85,11 +86,10 @@ $statuses_text = array(
 					<div class="details">
 						
 							<a class="user" href="<?php echo href_to('users', $photo['user_id']); ?>"><?php echo $photo['user_nickname']; ?></a> 
-					
-						
-						
-						
-						<?php } ?>
+							<!-- мы можем удалить фотографию,зная ее айди-->
+							<a class="delete" title="<?php echo LANG_PHOTOBATTLE_PHOTO_DELETE;?>"
+							href="<?php echo $this->href_to('delete_photo', $photo['id']); ?>">X</a> 
+
 					</div>
 				</li>
 			<?php } ?>
@@ -100,5 +100,5 @@ $statuses_text = array(
 			})
 		</script>
 	</div>
-
+<?php } ?>
 

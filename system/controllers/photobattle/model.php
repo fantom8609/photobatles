@@ -107,7 +107,85 @@ class modelPhotobattle extends cmsModel {
 			'status' => $status
 		));
 	}
+
+	public function getPhoto($id){
+		return $this->getItemById('photobattles_photos', $id);
+	}
+
+  public function deletePhoto($id) {
+
+  $config = cmsConfig::getInstance();
+
+  //достаем из базы одно фото
+  $photo = $this->getPhoto($id);
+
+  //преобразовываем в массив поле image
+	$images = self::yamlToArray($photo['image']);
+
+  //пробегаемся по всем изображениям,привязанным к фотографии и удаляем их
+		if (is_array($images)){
+			foreach($images as $path){
+				@unlink( $config->upload_path . $path );
+			}
+		}
+
+	//теперь спокойно удаляем фото
+	$this->delete('photobattles_photos', $id);
+
+  //уменишить счетчик только у той битвы,к которой привязана фотография то же самое почти что и where в обычном запросе
+	$this->filterEqual('id', $photo['battle_id']);	
+
+  //уменишить счетчик участников (increment - увеличть)
+	$this->decrement('photobattles', 'users_count');
+
+	$battle = $this->getBattle($photo['battle_id']);
+
+  //если статус битвы равен статусу модерация, и если количество участников битвы меньше минимального количества участников,то устанавливаем статус набор участников
+	if ($battle['status'] == photobattle::STATUS_MODERATION){
+			if ($battle['users_count'] < $battle['min_users']){
+				$this->setBattleStatus($battle['id'], photobattle::STATUS_PENDING);
+			}
+		}
+}
+
+
+	public function getPhotosForVoting($battle_id, $user_id){
+		
+		$user = cmsUser::getInstance();
+
+		//из таблицы фотографий выбираем те фотографии которые имеют отношение к указанной битве. Фильтрация по полю battle_id
+		$this->filterEqual('battle_id', $battle_id);
+		
+		$this->join('{users}', 'u', 'u.id = i.user_id');
+		$this->select('u.nickname', 'user_nickname');
+		
+		$this->joinLeft('photobattles_votes', 'v', "v.user_id = '{$user->id}' AND v.photo_id = i.id");
+		$this->filterIsNull('v.id');
+		
+		//сортируем в сслучайном порядке с помощью майскуэль функции RAND()
+		$this->order_by = "RAND()";
+		
+		//возвращаем только 2 записи
+		$this->limit(2);
+
+		//возвращаем записи
+		return $this->get('photobattles_photos');
+		
+	}
+
+
+		public function addVote($vote){
+		
+		if ($vote['score'] > 0){
+			//Увеличиваем поле score у той фотографии,за которую проголосовали
+			$this->
+				filterEqual('id', $vote['photo_id'])->
+				increment('photobattles_photos', 'score', $vote['score']);
+		}
+		return $this->insert('photobattles_votes', $vote);
+	}
 	
+
 
 
 }
